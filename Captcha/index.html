@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Dynamic Form with Captcha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <form id="myForm">
+
+        <input type="text" id="input1" placeholder="Enter User Name">
+        <input type="text" id="input2" placeholder="Enter Password">
+
+        <div id="captchaSection" class="hidden">
+            <div class="captcha-container">
+                <div class="captcha-box" id="captchaText"></div>
+                <button type="button" id="refreshBtn">↻</button>
+            </div>
+            <input type="text" id="captchaInput" placeholder="Enter captcha">
+        </div>
+
+        <button type="submit" id="submitBtn">Submit</button>
+        <button type="button" id="resetBtn" class="hidden">Reset</button>
+
+        <p id="message"></p>
+
+    </form>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
