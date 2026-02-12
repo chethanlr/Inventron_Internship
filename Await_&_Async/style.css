@@ -1,0 +1,103 @@
+// ── Config ────────────────────────────────────
+const API_URL = 'https://jsonplaceholder.typicode.com/users';
+
+// ── DOM References ────────────────────────────
+const fetchBtn = document.getElementById('fetchBtn');
+const statusEl = document.getElementById('status');
+const usersEl  = document.getElementById('users');
+const divider  = document.getElementById('divider');
+
+// ── Event Listener ────────────────────────────
+fetchBtn.addEventListener('click', fetchUsers);
+
+// ── Helpers ───────────────────────────────────
+
+/**
+ * Updates the status text and its visual style.
+ * @param {string} msg   - Message to display
+ * @param {string} type  - '' | 'loading' | 'error'
+ */
+function setStatus(msg, type = '') {
+  statusEl.className = 'status ' + type;
+  statusEl.innerHTML = type === 'loading'
+    ? `<span class="spinner"></span>${msg}`
+    : msg;
+}
+
+/**
+ * Returns initials from a full name string.
+ * @param {string} name - e.g. "Leanne Graham"
+ * @returns {string}    - e.g. "LG"
+ */
+function getInitials(name) {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
+}
+
+/**
+ * Builds and returns a user card DOM element.
+ * @param {Object} user     - User object from API
+ * @param {number} index    - Position in list (for animation delay)
+ * @returns {HTMLElement}
+ */
+function createCard(user, index) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = `${index * 45}ms`;
+
+  card.innerHTML = `
+    <div class="avatar">
+      <div class="avatar-initials">${getInitials(user.name)}</div>
+    </div>
+    <div class="info">
+      <div class="name">${user.name}</div>
+      <div class="meta">${user.email}</div>
+      <div class="meta">${user.company.name}</div>
+    </div>
+    <span class="tag">#${user.id}</span>
+  `;
+
+  return card;
+}
+
+// ── Main Function ─────────────────────────────
+
+/**
+ * Fetches users from the API and renders them to the page.
+ */
+async function fetchUsers() {
+  // Reset UI
+  fetchBtn.disabled = true;
+  usersEl.innerHTML = '';
+  divider.removeAttribute('data-count');
+  setStatus('Fetching...', 'loading');
+
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error — status ${response.status}`);
+    }
+
+    const users = await response.json();
+
+    // Update status & divider count
+    setStatus(`${users.length} users loaded`);
+    divider.setAttribute('data-count', `${users.length} results`);
+
+    // Render each user card
+    users.forEach((user, index) => {
+      const card = createCard(user, index);
+      usersEl.appendChild(card);
+    });
+
+  } catch (err) {
+    setStatus(`Error: ${err.message}`, 'error');
+  } finally {
+    fetchBtn.disabled = false;
+  }
+}
