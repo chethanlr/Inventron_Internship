@@ -1,0 +1,352 @@
+/* ── Reset ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Design Tokens ─────────────────────────── */
+:root {
+  --bg:      #0c0c0e;
+  --card:    #141416;
+  --accent:  #e8ff47;
+  --accent2: #ff6b35;
+  --text:    #f0f0f0;
+  --muted:   #555;
+  --border:  #222226;
+}
+
+/* ── Base ──────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px 80px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(232,255,71,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout ────────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: 720px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ────────────────────────────────── */
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(40px, 7vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ── Button Row ────────────────────────────── */
+.btn-wrap {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* ── Button ────────────────────────────────── */
+button {
+  background: var(--accent);
+  color: #0c0c0e;
+  border: none;
+  padding: 13px 30px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  min-width: 140px;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(232,255,71,0.28);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Status ────────────────────────────────── */
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+}
+
+.status.loading  { color: var(--accent); }
+.status.error    { color: var(--accent2); }
+.status.success  { color: #69ff94; }
+
+/* ── Spinner ───────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Divider ───────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 44px 0 36px;
+  position: relative;
+}
+
+.divider::after {
+  content: attr(data-count);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg);
+  padding-left: 14px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Grid ──────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+/* ── Card ──────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: rise 0.45s ease forwards;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+
+.card:hover {
+  border-color: #333;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+/* Glow layer */
+.card-glow {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-color, #e8ff47) 0%, transparent 70%);
+  opacity: 0.04;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.card:hover .card-glow {
+  opacity: 0.09;
+}
+
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Card Top (avatar + tag) ───────────────── */
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── Avatar ────────────────────────────────── */
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatar::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-color, #e8ff47);
+  opacity: 0.25;
+}
+
+.avatar-initials {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-color, #e8ff47);
+  letter-spacing: 0.04em;
+}
+
+/* ── Tag ───────────────────────────────────── */
+.tag {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+
+/* ── Info Block ────────────────────────────── */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.meta {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta-icon {
+  opacity: 0.4;
+  font-style: normal;
+  flex-shrink: 0;
+  width: 12px;
+  text-align: center;
+}
+
+/* ── Card Footer ───────────────────────────── */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  gap: 8px;
+}
+
+.company {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.web-link {
+  font-size: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.web-link:hover {
+  color: var(--text);
+}
+
+/* ── Footer ────────────────────────────────── */
+footer {
+  margin-top: 70px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  z-index: 1;
+  position: relative;
+}
